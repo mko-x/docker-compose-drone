@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+drone_server:
+    image: drone/drone:1.0.0-rc.5
+    container_name: drone_server
+    restart: always
+    ports:
+      - 8080:80
+      - 4443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker/drone/data:/data
+    environment:
+      - DRONE_GITHUB_SERVER=https://github.com
+      - DRONE_GITHUB_CLIENT_ID=XXXXXXXX
+      - DRONE_GITHUB_CLIENT_SECRET=XXXXXXXXXXXXXXXXX
+      - DRONE_RPC_SECRET=XXXXXXXXXX
+      - DRONE_SERVER_HOST=subdomain.domail.tld
+      - DRONE_SERVER_PROTO=https
+      - DRONE_TLS_AUTOCERT=true
+# optional if using reverse proxy like github.com/jwilder/nginx-proxy
+#      - VIRTUAL_HOST=subdomain.domail.tld
+#      - VIRTUAL_PORT=80
+#
+#    networks:
+#      - proxy_network
+#
+#networks:
+#  proxy_network:
+#    external: true  # if it is already running
+
