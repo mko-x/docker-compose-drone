@@ -1,8 +1,12 @@
 # docker-compose-drone
 Working drone configuration made with docker-compose
 
-# info
-This **work in progress** may change until final version 1.0 is released.
+# Info
+This **work in progress** may change until next final version is released.
+
+# Prerequisites
+
+You need to create an OAuth application in github.com like described in the [docs.drone.io /installation / single-machine](https://docs.drone.io/installation/github/single-machine/).
 
 # Dockerfile
 
@@ -16,6 +20,7 @@ RUN apk add --no-cache bash && \
 
 RUN apk del bash
 ```
+and
 
 ```Dockerfile
 VOLUME [ "/var/lib/drone" ]
