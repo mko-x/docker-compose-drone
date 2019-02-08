@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  drone_server:
+    build: ./drone-server/.
+    image: mk0x/drone-server
+    container_name: drone_server
+    restart: always
+    volumes:
+      - /opt/docker/drone/data:/data
+      - /opt/docker/drone/drone:/var/lib/drone
+    environment:
+      # optional to run in release mode
+      # - GIN_MODE=release
+      - DRONE_GITHUB=true
+      - DRONE_GITHUB_SERVER=https://github.com
+      - DRONE_GITHUB_CLIENT_ID=XXXXXXXXXXXXXX
+      - DRONE_GITHUB_CLIENT_SECRET=XXXXXXXXXXXXXX
+      - DRONE_GITHUB_SKIP_VERIFY=true
+      - DRONE_RPC_SECRET=XXXXXXXXXXXXXX
+      - DRONE_HOST=https://subdomain.domain.tld
+      - DRONE_TLS_AUTOCERT=true
+      # optional if using reverse-proxy
+      #      - VIRTUAL_HOST=subdomain.domain.tld
+    # networks:
+    #  proxy_default:
+
+#networks:
+#  proxy_default:
+#    external: true
