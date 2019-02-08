@@ -16,6 +16,7 @@ Put the created github OAuth credentials into your environment.
 
 ## Additional secret github token
 Navigate to the settings/hooks of the project you want to build with drone.
+
 Like: https://github.com/{github-username}/{repo-name}/settings/hooks
 
 Click on 'edit' next to the webhook displayed.
@@ -42,6 +43,3 @@ For drone/agent here:
 ```yaml
 - DRONE_SECRET={% remote call secret %} # put your self created secret here
 ``` 
-
-# Aim here: Simplicity
-
