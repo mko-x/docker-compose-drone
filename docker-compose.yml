@@ -2,47 +2,50 @@ version: '2'
 
 services:
   drone_server:
-    image: drone/drone:1.0.0-rc.5
+    build: ./drone-server/.
+    image: mk0x/drone-server:alpine
     container_name: drone_server
+    ports:
+      - 80:80
+      - 443:443
     volumes:
-      - /opt/dox/drone/data:/data
-      - /opt/dox/drone/lib:/var/lib/drone
+      - /opt/docker/drone/data:/data
+      # to avoid 'file or directory does not exist'-errors
+      - /opt/docker/drone/lib:/var/lib/drone
     environment:
+      - DRONE_GITHUB=true
       - DRONE_GITHUB_SERVER=https://github.com
-      - DRONE_GITHUB_CLIENT_ID={% github oauth client id %} # your client id goes here
-      - DRONE_GITHUB_CLIENT_SECRET={% github oauth client secret %} # your client secret goes here
-      - DRONE_RPC_SECRET={% rpc call secret %} # put your self created secret here
-      - DRONE_SERVER_HOST=subdomain.domain.tld
-      - DRONE_SERVER_PROTO=https
+      - DRONE_GITHUB_SKIP_VERIFY=true
+      - DRONE_GITHUB_CLIENT_ID={% your github oauth client id %}
+      - DRONE_GITHUB_CLIENT_SECRET={% your github oauth client secret %}
+      - DRONE_RPC_SECRET={% your self created rpc call secret %}
+      - DRONE_AGENT_SECRET={% your self created rpc call secret, again necessary %}
+      - DRONE_HOST=https://{% your subdomain.domain.tld %}
       - DRONE_TLS_AUTOCERT=true
-      # optional
-      # - VIRTUAL_HOST=subdomain.domain.tld
+      - DRONE_USER_CREATE=username:{% your desired username %},admin:true
+      - SECRET_TOKEN={% your self created secret token in github webhook%}
     restart: always
     networks:
-# optional
-#      proxy_network:
+      outpost_network:
       drone_network:
 
   drone-agent:
-    image: drone/agent:1.0.0-rc.5
+    build: ./drone-agent/.
+    image: mk0x/drone-agent:alpine
     container_name: drone_agent
     command: agent
-    # optional, if you want to have more build agents
-    # scale: 3
     restart: unless-stopped
     depends_on:
       - drone_server
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DRONE_SERVER=drone_server:9000
-      - DRONE_SECRET={% remote call secret %} # put your self created secret here
-      # DRONE_RUNNER_CAPACITY=2 # default 2
+      DRONE_SERVER: "drone_server:9000"
+      DRONE_SECRET: "{% your self created rpc call secret, again necessary %}"
     networks:
       drone_network:
 
 networks:
   drone_network: 
-# optional
-#  proxy_network:
-#    external: true
+  outpost_network:
+    external: true
